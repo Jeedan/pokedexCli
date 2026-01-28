@@ -6,12 +6,20 @@ describe.each([
 		input: "  hello  world  ",
 		expected: ["hello", "world"],
 	},
+	{
+		input: "",
+		expected: [],
+	},
+	{
+		input: "ChArMaNdAR",
+		expected: ["charmandar"],
+	},
 	// TODO: more test cases here
 ])("cleanInput($input)", ({ input, expected }) => {
 	test(`Expected: ${expected}`, () => {
 		// TODO: call cleanInput with the input here
-		console.log(`input: ${input}`);
 		const actual = cleanInput(input);
+		console.log(`input: ${input}`);
 		console.log(`actual: ${actual}`);
 		// The `expect` and `toHaveLength` functions are from vitest
 		// they will fail the test if the condition is not met
