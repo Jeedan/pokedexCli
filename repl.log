@@ -1,0 +1,8 @@
+
+> pokedexcli@1.0.0 dev
+> npx tsc && node dist/main.js
+
+Hello, world!
+Pokedex > Your command was: charmander
+Pokedex > Your command was: pikachu
+Pokedex > 
