@@ -1,0 +1,33 @@
+{
+  "devDependencies": {
+    "@types/node": "^25.0.10",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  },
+  "name": "pokedexcli",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "undici-types": "^7.16.0"
+  },
+  "type": "module",
+  "scripts": {
+    "defaulTest": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx tsc",
+    "start": "node dist/main.js",
+    "dev": "npx tsc && node dist/main.js",
+    "test": "vitest --run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jeedan/pokedexCli.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jeedan/pokedexCli/issues"
+  },
+  "homepage": "https://github.com/Jeedan/pokedexCli#readme",
+  "description": ""
+}
