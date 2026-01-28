@@ -7,12 +7,36 @@ describe.each([
 		expected: ["hello", "world"],
 	},
 	{
+		input: "  hello           world  ",
+		expected: ["hello", "world"],
+	},
+	{
 		input: "",
 		expected: [],
 	},
 	{
+		input: "       ",
+		expected: [],
+	},
+	{
+		input: "hello\tworld",
+		expected: ["hello", "world"],
+	},
+	{
+		input: "hello\nworld",
+		expected: ["hello", "world"],
+	},
+	{
 		input: "ChArMaNdAR",
 		expected: ["charmandar"],
+	},
+	{
+		input: "ChArMaNdAR BuLBaSauR SquiRtle",
+		expected: ["charmandar", "bulbasaur", "squirtle"],
+	},
+	{
+		input: "    mewtwo    ",
+		expected: ["mewtwo"],
 	},
 	// TODO: more test cases here
 ])("cleanInput($input)", ({ input, expected }) => {
