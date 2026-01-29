@@ -1,4 +1,3 @@
-import { createInterface, type Interface } from "readline";
 import type { State } from "./state.js";
 import { runCommands } from "./commands.js";
 
@@ -24,6 +23,7 @@ export function startREPL(state: State): void {
 		const cleanedInput = cleanInput(line);
 		if (cleanedInput.length === 0) {
 			rl.prompt();
+			return;
 		}
 		runCommands(state, cleanedInput);
 		rl.prompt();
@@ -32,7 +32,7 @@ export function startREPL(state: State): void {
 
 // display the help command on start
 function showInitialHelp(state: State): void {
-	const helpCommand = state.commands;
+	const helpCommand = state.commands.help;
 	if (!helpCommand) return;
-	helpCommand.help.callback(state);
+	helpCommand.callback(state);
 }
