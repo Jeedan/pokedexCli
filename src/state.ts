@@ -1,4 +1,4 @@
-import { createInterface, type Interface } from "readline";
+import { type Interface } from "readline";
 import { getCommands } from "./commands.js";
 
 export type CLICommand = {
@@ -12,13 +12,11 @@ export type State = {
 	readline: Interface;
 };
 
-export function initState(): State {
-	const rl = createInterface({
-		input: process.stdin,
-		output: process.stdout,
-		prompt: "Pokedex > ",
-	});
-
-	const commands = getCommands();
-	return { commands, readline: rl };
+// this way we can pass test commands into initState
+// helps when testing, if nothing is passed we just grab them from the getter
+export function initState(
+	readline: Interface,
+	commands = getCommands(),
+): State {
+	return { commands, readline };
 }
