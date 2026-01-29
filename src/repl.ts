@@ -1,4 +1,5 @@
 import { createInterface } from "node:readline";
+import { getCommands, runCommands } from "./commands.js";
 
 export function cleanInput(input: string): string[] {
 	// split string based on whitespace
@@ -10,7 +11,7 @@ export function cleanInput(input: string): string[] {
 		.trim()
 		.toLowerCase()
 		.split(/\s+/)
-		.filter((word) => word !== "");
+		.filter(Boolean);
 	return cleanedWords;
 }
 
@@ -21,13 +22,17 @@ export function startREPL(): void {
 		prompt: "Pokedex > ",
 	});
 
+	// get the commands
+	const commands = getCommands();
+	// display the help command on start
+	commands.help.callback(commands);
 	rl.prompt();
 	rl.on("line", (line) => {
 		const cleanedInput = cleanInput(line);
-		if (!cleanedInput) {
+		if (cleanedInput.length === 0) {
 			rl.prompt();
 		}
-		console.log(`Your command was: ${cleanedInput[0]}`);
+		runCommands(commands, cleanedInput);
 		rl.prompt();
 	});
 }
