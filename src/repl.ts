@@ -1,6 +1,6 @@
-import { createInterface } from "node:readline";
-import type { CLICommand } from "./command.js";
-import { getCommands, runCommands } from "./commands.js";
+import { createInterface, type Interface } from "readline";
+import type { State } from "./state.js";
+import { runCommands } from "./commands.js";
 
 export function cleanInput(input: string): string[] {
 	// split string based on whitespace
@@ -16,29 +16,23 @@ export function cleanInput(input: string): string[] {
 	return cleanedWords;
 }
 
-export function startREPL(): void {
-	const rl = createInterface({
-		input: process.stdin,
-		output: process.stdout,
-		prompt: "Pokedex > ",
-	});
-
-	const commands = getCommands();
-	showInitialHelp(commands);
+export function startREPL(state: State): void {
+	const rl = state.readline;
+	showInitialHelp(state);
 	rl.prompt();
 	rl.on("line", (line) => {
 		const cleanedInput = cleanInput(line);
 		if (cleanedInput.length === 0) {
 			rl.prompt();
 		}
-		runCommands(commands, cleanedInput);
+		runCommands(state, cleanedInput);
 		rl.prompt();
 	});
 }
 
 // display the help command on start
-function showInitialHelp(commands: Record<string, CLICommand>): void {
-	const helpCommand = commands.help;
+function showInitialHelp(state: State): void {
+	const helpCommand = state.commands;
 	if (!helpCommand) return;
-	commands.help.callback(commands);
+	helpCommand.help.callback(state);
 }
