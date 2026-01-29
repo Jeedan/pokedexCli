@@ -1,4 +1,5 @@
 import { createInterface } from "node:readline";
+import type { CLICommand } from "./command.js";
 import { getCommands, runCommands } from "./commands.js";
 
 export function cleanInput(input: string): string[] {
@@ -22,10 +23,8 @@ export function startREPL(): void {
 		prompt: "Pokedex > ",
 	});
 
-	// get the commands
 	const commands = getCommands();
-	// display the help command on start
-	commands.help.callback(commands);
+	showInitialHelp(commands);
 	rl.prompt();
 	rl.on("line", (line) => {
 		const cleanedInput = cleanInput(line);
@@ -35,4 +34,11 @@ export function startREPL(): void {
 		runCommands(commands, cleanedInput);
 		rl.prompt();
 	});
+}
+
+// display the help command on start
+function showInitialHelp(commands: Record<string, CLICommand>): void {
+	const helpCommand = commands.help;
+	if (!helpCommand) return;
+	commands.help.callback(commands);
 }
