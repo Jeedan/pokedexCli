@@ -15,17 +15,17 @@ export function cleanInput(input: string): string[] {
 	return cleanedWords;
 }
 
-export function startREPL(state: State): void {
+export async function startREPL(state: State): Promise<void> {
 	const rl = state.readline;
 	showInitialHelp(state);
 	rl.prompt();
-	rl.on("line", (line) => {
+	rl.on("line", async (line) => {
 		const cleanedInput = cleanInput(line);
 		if (cleanedInput.length === 0) {
 			rl.prompt();
 			return;
 		}
-		runCommands(state, cleanedInput);
+		await runCommands(state, cleanedInput);
 		rl.prompt();
 	});
 }
