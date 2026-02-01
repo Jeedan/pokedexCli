@@ -18,14 +18,15 @@ export async function commandCatch(
 	const catchRate = Math.round(Math.random() * 650);
 	if (catchRate < pokemon.base_experience) {
 		console.log(
-			`Your catch rate: ${catchRate} was not enough to beat ${pokemon.base_experience}`,
+			`Your catch rate: ${catchRate} was not enough to beat ${pokemon.base_experience}\n`,
 		);
 		console.log(`${pokemon.name} escaped!`);
 		return;
 	}
 	console.log(
-		`Your catch rate: ${catchRate} beat ${pokemon.base_experience}!`,
+		`Your catch rate: ${catchRate} beat ${pokemon.base_experience}!\n`,
 	);
 	console.log(`${pokemon.name} was caught!`);
+
 	addToPokedex(state, pokemon);
 }

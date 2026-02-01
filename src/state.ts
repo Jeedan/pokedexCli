@@ -43,8 +43,10 @@ export function addToPokedex(state: State, pokemon: Pokemon): void {
 		return;
 	}
 	console.log(`${pokemon.name} added to the Pokedex.`);
+	console.log(`You may now inspect it with the inspect command.`);
 	state.pokedex[key] = pokemon;
 }
+
 export function getPokemon(
 	state: State,
 	pokemonName: string,

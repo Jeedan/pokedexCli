@@ -28,6 +28,7 @@ export class PokeAPI {
 	// generic fetch with cache function
 	// we will use this to grab api endpoints
 	// before we fetch we check if we cached it already
+	// store fetched data in cache
 	private async fetchWithCache<T>(fullURL: string): Promise<T> {
 		const cachedResponse = this.checkCachedResponse<T>(fullURL);
 
@@ -36,6 +37,9 @@ export class PokeAPI {
 		}
 
 		const data = await this.fetch<T>(fullURL);
+		// store in cache
+		// TODO refactor ?
+		this.#cache.add(fullURL, data);
 		return data;
 	}
 
@@ -54,7 +58,6 @@ export class PokeAPI {
 				throw new Error(`Response status: ${response.status}`);
 			}
 			const data = await response.json();
-			this.#cache.add(fullURL, data);
 			return data;
 		} catch (err) {
 			if (err instanceof Error) {
@@ -178,4 +181,27 @@ export type Pokemon = {
 	order: number;
 	height: number;
 	weight: number;
+	stats: Stats[];
+	types: Type[];
+};
+
+export type Stats = {
+	base_stat: number;
+	effort: number;
+	stat: StatInfo;
+};
+
+export type StatInfo = {
+	name: string;
+	url: string;
+};
+
+export type Type = {
+	slot: number;
+	type: TypeInfo;
+};
+
+export type TypeInfo = {
+	name: string;
+	url: string;
 };

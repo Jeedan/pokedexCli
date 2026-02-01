@@ -5,6 +5,8 @@ import { commandMap } from "./command_map.js";
 import { commandMapBack } from "./command_mapBack.js";
 import { commandExplore } from "./command_explore.js";
 import { commandCatch } from "./command_catch.js";
+import { commandInspect } from "./command_inspect.js";
+import { commandPokedex } from "./command_pokedex.js";
 
 export function getCommands(): Record<string, CLICommand> {
 	return {
@@ -40,6 +42,16 @@ export function getCommands(): Record<string, CLICommand> {
 				"Attempt to catch the given Pokemon. Example: catch pikachu",
 			callback: commandCatch,
 		},
+		inspect: {
+			name: "inspect",
+			description: "Display the stats of a Pokemon.",
+			callback: commandInspect,
+		},
+		pokedex: {
+			name: "pokedex",
+			description: "Display all caught Pokemon.",
+			callback: commandPokedex,
+		},
 		// more commands here
 	};
 }
@@ -60,7 +72,7 @@ export async function runCommands(
 	try {
 		//this way we see the shape of the array
 		// alternatively use ${args.join(" ")}
-		console.log(`run string args:`, args);
+		//console.log(`run string args:`, args);
 		await command.callback(state, ...args);
 	} catch (err) {
 		if (err instanceof Error) {
