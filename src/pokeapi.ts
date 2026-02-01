@@ -27,6 +27,7 @@ export class PokeAPI {
 			});
 
 			if (!response.ok) {
+				console.log(`full url:`, fullURL);
 				throw new Error(`Response status: ${response.status}`);
 			}
 			const data = await response.json();
@@ -47,6 +48,7 @@ export class PokeAPI {
 		try {
 			const cachedResponse = this.#cache.get<Location>(fullURL);
 			if (cachedResponse) {
+				console.log("Serving from cache:\n");
 				return cachedResponse;
 			}
 
@@ -60,6 +62,7 @@ export class PokeAPI {
 			});
 
 			if (!response.ok) {
+				console.log(`full url:`, fullURL);
 				throw new Error(`Response status: ${response.status}`);
 			}
 			const data = await response.json();
@@ -83,6 +86,17 @@ export type ShallowLocation = {
 };
 
 export type Location = {
+	name: string;
+	url: string;
+	pokemon_encounters: EncountersWrapper[];
+};
+
+export type EncountersWrapper = {
+	pokemon: Pokemon;
+	version_details: any[];
+};
+
+export type Pokemon = {
 	name: string;
 	url: string;
 };

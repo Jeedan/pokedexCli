@@ -3,6 +3,7 @@ import { commandExit } from "./command_exit.js";
 import { commandHelp } from "./command_help.js";
 import { commandMap } from "./command_map.js";
 import { commandMapBack } from "./command_mapBack.js";
+import { commandExplore } from "./command_explore.js";
 
 export function getCommands(): Record<string, CLICommand> {
 	return {
@@ -26,6 +27,11 @@ export function getCommands(): Record<string, CLICommand> {
 			description: "Displays the previous 20 locations from the PokeAPI.",
 			callback: commandMapBack,
 		},
+		explore: {
+			name: "explore",
+			description: "Displays the Pokemon in the given location.",
+			callback: commandExplore,
+		},
 		// more commands here
 	};
 }
@@ -44,7 +50,8 @@ export async function runCommands(
 	}
 
 	try {
-		await command.callback(state);
+		console.log(`run string args: ${[cleanedInput[1] ?? firstWord]}`);
+		await command.callback(state, cleanedInput[1] ?? firstWord);
 	} catch (err) {
 		if (err instanceof Error) {
 			console.error("Error:", err);
