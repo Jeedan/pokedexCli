@@ -10,7 +10,7 @@ export async function commandMapBack(state: State): Promise<void> {
 		console.log("you're on the first page");
 		return;
 	}
-	const locations = await state.pokeAPI.fetchLocations(
+	const locations = await state.pokeAPI.fetchLocationsTest(
 		state.prevLocationsURL,
 	);
 

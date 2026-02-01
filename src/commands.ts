@@ -41,7 +41,7 @@ export async function runCommands(
 	state: State,
 	cleanedInput: string[],
 ): Promise<void> {
-	const firstWord = cleanedInput[0];
+	const [firstWord, ...args] = cleanedInput;
 	if (!firstWord) return;
 	const command = state.commands[firstWord];
 	if (!command) {
@@ -50,8 +50,10 @@ export async function runCommands(
 	}
 
 	try {
-		console.log(`run string args: ${[cleanedInput[1] ?? firstWord]}`);
-		await command.callback(state, cleanedInput[1] ?? firstWord);
+		//this way we see the shape of the array
+		// alternatively use ${args.join(" ")}
+		console.log(`run string args:`, args);
+		await command.callback(state, ...args);
 	} catch (err) {
 		if (err instanceof Error) {
 			console.error("Error:", err);
