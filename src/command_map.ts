@@ -6,7 +6,7 @@ export async function commandMap(state: State): Promise<void> {
 	const fullURL =
 		state.nextLocationsURL === "" ? undefined : state.nextLocationsURL;
 
-	const locations = await state.pokeAPI.fetchLocationsTest(fullURL);
+	const locations = await state.pokeAPI.fetchLocations(fullURL);
 
 	// update next and previous URLS for the next calls
 	state.nextLocationsURL = locations.next ?? "";
