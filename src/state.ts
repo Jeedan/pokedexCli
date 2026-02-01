@@ -1,6 +1,6 @@
 import { createInterface, type Interface } from "readline";
 import { getCommands } from "./commands.js";
-import { PokeAPI } from "./pokeapi.js";
+import { PokeAPI, type Pokemon } from "./pokeapi.js";
 
 export type CLICommand = {
 	name: string;
@@ -14,6 +14,7 @@ export type State = {
 	pokeAPI: PokeAPI;
 	nextLocationsURL: string;
 	prevLocationsURL: string;
+	pokedex: Record<string, Pokemon>;
 };
 
 // this way we can pass test commands into initState
@@ -31,5 +32,23 @@ export function initState(): State {
 		pokeAPI: new PokeAPI(),
 		nextLocationsURL: "",
 		prevLocationsURL: "",
+		pokedex: {},
 	};
+}
+
+export function addToPokedex(state: State, pokemon: Pokemon): void {
+	const key = pokemon.name.toLowerCase();
+	if (state.pokedex[key]) {
+		console.log(`${pokemon.name} is already in your pokedex.`);
+		return;
+	}
+	console.log(`${pokemon.name} added to the Pokedex.`);
+	state.pokedex[key] = pokemon;
+}
+export function getPokemon(
+	state: State,
+	pokemonName: string,
+): Pokemon | undefined {
+	const pokemon = state.pokedex[pokemonName.toLowerCase()];
+	return pokemon;
 }

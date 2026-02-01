@@ -19,6 +19,12 @@ export class PokeAPI {
 		return this.fetchWithCache<Location>(fullURL);
 	}
 
+	async fetchPokemon(pokemonName: string): Promise<Pokemon> {
+		//https://pokeapi.co/api/v2/pokemon/{id or name}/
+		const fullURL = `${PokeAPI.baseURL}/pokemon/${pokemonName ?? ""}`;
+		return this.fetchWithCache<Pokemon>(fullURL);
+	}
+
 	// generic fetch with cache function
 	// we will use this to grab api endpoints
 	// before we fetch we check if we cached it already
@@ -167,4 +173,9 @@ export type EncountersWrapper = {
 export type Pokemon = {
 	name: string;
 	url: string;
+	id: number;
+	base_experience: number;
+	order: number;
+	height: number;
+	weight: number;
 };

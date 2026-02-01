@@ -18,7 +18,7 @@ export class Cache {
 
 	add<T>(key: string, val: T): void {
 		this.#cache.set(key, { createdAt: Date.now(), val: val });
-		console.log(`Added ${key} to the cache.`);
+		console.log(`Added ${key} to the cache.\n`);
 	}
 
 	get<T>(key: string): T | undefined {
