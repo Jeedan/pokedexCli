@@ -25,6 +25,8 @@ export async function startREPL(state: State): Promise<void> {
 			rl.prompt();
 			return;
 		}
+
+		console.clear();
 		await runCommands(state, cleanedInput);
 		rl.prompt();
 	});

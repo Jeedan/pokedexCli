@@ -5,6 +5,14 @@ export async function commandExplore(
 	locationName: string,
 ): Promise<void> {
 	// grab location
+	if (!locationName) {
+		console.log(
+			"Please enter a location name to explore!\nExample: explore viridian-forest-area",
+		);
+		console.log(`\nYou can use the 'map' command to explore locations!`);
+		console.log(`\nOr type 'help' for more commands!`);
+		return;
+	}
 	console.log(`Exploring ${locationName}...`);
 	const locationResponse = await state.pokeAPI.fetchLocation(locationName);
 	const pokemonEncounters = locationResponse.pokemon_encounters;

@@ -15,4 +15,8 @@ export async function commandMap(state: State): Promise<void> {
 	for (const location of locations.results) {
 		console.log(`${location.name}`);
 	}
+
+	console.log(
+		"\nUse 'map' to list more locations.\nUse 'mapb' to list previous locations.",
+	);
 }
