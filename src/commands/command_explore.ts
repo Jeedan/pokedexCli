@@ -1,4 +1,4 @@
-import { State } from "./state.js";
+import { State } from "../state/state.js";
 
 export async function commandExplore(
 	state: State,

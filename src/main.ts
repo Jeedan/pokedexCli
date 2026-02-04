@@ -1,5 +1,5 @@
-import { startREPL } from "./repl.js";
-import { initState } from "./state.js";
+import { startREPL } from "./repl/repl.js";
+import { initState } from "./state/state.js";
 
 function main() {
 	const state = initState();

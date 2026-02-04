@@ -1,4 +1,4 @@
-import type { State } from "./state.js";
+import type { State } from "../state/state.js";
 
 export async function commandMapBack(state: State): Promise<void> {
 	// fetch previous locations

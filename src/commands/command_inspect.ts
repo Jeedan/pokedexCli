@@ -1,4 +1,4 @@
-import { getPokemon, State } from "./state.js";
+import { getPokemon, State } from "../state/state.js";
 
 export async function commandInspect(
 	state: State,

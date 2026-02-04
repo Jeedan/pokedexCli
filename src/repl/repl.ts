@@ -1,5 +1,5 @@
-import type { State } from "./state.js";
-import { runCommands } from "./commands.js";
+import type { State } from "../state/state.js";
+import { runCommands } from "../commands/commands.js";
 
 export function cleanInput(input: string): string[] {
 	// split string based on whitespace

@@ -1,4 +1,4 @@
-import type { State } from "./state.js";
+import type { State } from "../state/state.js";
 
 export async function commandHelp(state: State): Promise<void> {
 	console.log("Welcome to the Pokedex!");

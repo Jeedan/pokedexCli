@@ -1,4 +1,4 @@
-import { State, addToPokedex } from "./state.js";
+import { State, addToPokedex } from "../state/state.js";
 
 // use Math.random() to determine a chance catch rate
 // determine catch rate based on pokemon's
