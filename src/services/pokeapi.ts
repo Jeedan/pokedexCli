@@ -25,6 +25,15 @@ export class PokeAPI {
 		return this.fetchWithCache<Pokemon>(fullURL);
 	}
 
+	async fetchRandomPokemon(): Promise<Pokemon> {
+		// fetch a random pokemon
+		// we'll keep it in the 1-151 range for
+		const randomId = Math.round(Math.random() * 151);
+		const fullURL = `${PokeAPI.baseURL}/pokemon/${randomId ?? ""}`;
+
+		return this.fetchWithCache<Pokemon>(fullURL);
+	}
+
 	// generic fetch with cache function
 	// we will use this to grab api endpoints
 	// before we fetch we check if we cached it already
@@ -62,8 +71,11 @@ export class PokeAPI {
 		} catch (err) {
 			if (err instanceof Error) {
 				console.error(err.message);
+				console.log(
+					"Could not find what you are looking for, please try again!",
+				);
 			}
-			throw new Error(`Error: ${err}`);
+			throw new Error(`${err}`);
 		}
 	}
 

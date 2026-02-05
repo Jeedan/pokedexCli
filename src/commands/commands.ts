@@ -7,6 +7,11 @@ import { commandExplore } from "./command_explore.js";
 import { commandCatch } from "./command_catch.js";
 import { commandInspect } from "./command_inspect.js";
 import { commandPokedex } from "./command_pokedex.js";
+import {
+	commandBattle,
+	commandFight,
+} from "./battle_Commands/command_battle.js";
+import { commandRunAway } from "./battle_Commands/command_runAway.js";
 
 export function getCommands(): Record<string, CLICommand> {
 	return {
@@ -52,7 +57,27 @@ export function getCommands(): Record<string, CLICommand> {
 			description: "Display all caught Pokemon.",
 			callback: commandPokedex,
 		},
+		battle: {
+			name: "battle",
+			description: "Battle wild pokemon!",
+			callback: commandBattle,
+		},
 		// more commands here
+	};
+}
+
+export function getBattleCommands(): Record<string, CLICommand> {
+	return {
+		fight: {
+			name: "fight",
+			description: "Attacks the opponent opponent!",
+			callback: commandFight, // change this probably
+		},
+		run: {
+			name: "run away",
+			description: "Run away from battle",
+			callback: commandRunAway,
+		},
 	};
 }
 
@@ -62,8 +87,29 @@ export async function runCommands(
 	cleanedInput: string[],
 ): Promise<void> {
 	const [firstWord, ...args] = cleanedInput;
+
 	if (!firstWord) return;
-	const command = state.commands[firstWord];
+
+	console.clear();
+	if (state.mode === "battle") {
+		const command = state.commands.battleCommands[firstWord];
+		await runCallBack(command, state, args);
+		return;
+	} else if (state.mode === "exploration") {
+		// Todo
+		console.log("we exploring...");
+		return;
+	}
+
+	const command = state.commands.menuCommands[firstWord];
+	await runCallBack(command, state, args);
+}
+
+async function runCallBack(
+	command: CLICommand,
+	state: State,
+	args: string[],
+): Promise<void> {
 	if (!command) {
 		console.log("Unknown command");
 		return;

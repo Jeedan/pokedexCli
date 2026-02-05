@@ -12,9 +12,14 @@ export async function commandCatch(
 	state: State,
 	pokemonName: string,
 ): Promise<void> {
+	if (!pokemonName) {
+		console.log("Please enter a pokemon name!");
+		return;
+	}
 	const pokemon = await state.pokeAPI.fetchPokemon(pokemonName);
 
 	console.log(`Throwing a Pokeball at ${pokemonName ?? "pikachu"}...`);
+
 	const catchRate = Math.round(Math.random() * 650);
 	if (catchRate < pokemon.base_experience) {
 		console.log(
@@ -23,9 +28,11 @@ export async function commandCatch(
 		console.log(`${pokemon.name} escaped!`);
 		return;
 	}
+
 	console.log(
 		`Your catch rate: ${catchRate} beat ${pokemon.base_experience}!\n`,
 	);
+
 	console.log(`${pokemon.name} was caught!`);
 
 	addToPokedex(state, pokemon);

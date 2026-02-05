@@ -1,5 +1,5 @@
 import { createInterface, type Interface } from "readline";
-import { getCommands } from "../commands/commands.js";
+import { getCommands, getBattleCommands } from "../commands/commands.js";
 import { PokeAPI, type Pokemon } from "../services/pokeapi.js";
 
 export type CLICommand = {
@@ -8,13 +8,25 @@ export type CLICommand = {
 	callback: (state: State, ...args: string[]) => Promise<void>;
 };
 
+export type mode = "menu" | "battle" | "exploration";
+
 export type State = {
 	readline: Interface;
-	commands: Record<string, CLICommand>;
+	commands: {
+		menuCommands: Record<string, CLICommand>;
+		battleCommands: Record<string, CLICommand>;
+	};
 	pokeAPI: PokeAPI;
 	nextLocationsURL: string;
 	prevLocationsURL: string;
 	pokedex: Record<string, Pokemon>;
+	mode: mode;
+	battleState?: {
+		opponentPokemon: Pokemon;
+		playerPokemon: Pokemon;
+		opponentHP: number;
+		playerHP: number;
+	};
 };
 
 // this way we can pass test commands into initState
@@ -28,11 +40,15 @@ export function initState(): State {
 
 	return {
 		readline: rl,
-		commands: getCommands(),
+		commands: {
+			menuCommands: getCommands(),
+			battleCommands: getBattleCommands(),
+		},
 		pokeAPI: new PokeAPI(),
 		nextLocationsURL: "",
 		prevLocationsURL: "",
 		pokedex: {},
+		mode: "menu",
 	};
 }
 
@@ -51,6 +67,17 @@ export function getPokemon(
 	state: State,
 	pokemonName: string,
 ): Pokemon | undefined {
+	if (!pokemonName) {
+		console.log("Please enter a valid pokemon name!");
+		return;
+	}
 	const pokemon = state.pokedex[pokemonName.toLowerCase()];
 	return pokemon;
+}
+
+// display the help command on start
+export function showInitialHelp(state: State): void {
+	const helpCommand = state.commands.menuCommands.help;
+	if (!helpCommand) return;
+	helpCommand.callback(state);
 }

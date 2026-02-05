@@ -1,4 +1,4 @@
-import type { State } from "../state/state.js";
+import { type State, showInitialHelp } from "../state/state.js";
 import { runCommands } from "../commands/commands.js";
 
 export function cleanInput(input: string): string[] {
@@ -26,15 +26,7 @@ export async function startREPL(state: State): Promise<void> {
 			return;
 		}
 
-		console.clear();
 		await runCommands(state, cleanedInput);
 		rl.prompt();
 	});
-}
-
-// display the help command on start
-function showInitialHelp(state: State): void {
-	const helpCommand = state.commands.help;
-	if (!helpCommand) return;
-	helpCommand.callback(state);
 }
