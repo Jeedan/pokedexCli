@@ -9,6 +9,7 @@ import { showInitialHelp, State } from "../../state/state.js";
 // keep fighting until either reaches 0 hp.
 
 export async function commandBattle(state: State): Promise<void> {
+	console.clear();
 	state.mode = "battle";
 	state.battleState = {
 		opponentPokemon: await state.pokeAPI.fetchRandomPokemon(),
@@ -90,8 +91,33 @@ export function exitBattle(state: State) {
 }
 
 export function displayBattleOptions(): void {
-	console.log("\nWhat would you like to do?");
-	console.log("1.Fight");
-	console.log("2.Catch");
-	console.log("3.Run\n");
+	const width = 40;
+	const gap = 10;
+	const horizontalBorder = "=".repeat(width);
+	const questionText = "What would you like to do?";
+	const fightText = "1.Fight";
+	const catchText = "2.Catch";
+	const runText = "3.Run";
+
+	const padding = centerLine(questionText, width, gap);
+	const questionPadding = questionText.length / 2;
+	const centerRun = centerLine(runText, width, gap);
+	console.log(`padding: ${padding}`);
+	console.log(`+${horizontalBorder}+`);
+	console.log(
+		`|${" ".repeat(padding)}${questionText}${" ".repeat(padding)}|`,
+	);
+	console.log(
+		`|${" ".repeat(padding)}${fightText}${" ".repeat(questionPadding)}${catchText}${" ".repeat(padding - 1)}|`,
+	);
+	console.log(
+		`|${" ".repeat(centerRun)}${runText}${" ".repeat(horizontalBorder.length / 2 - 2)}|`,
+	);
+	console.log(`+${horizontalBorder}+`);
+}
+
+function centerLine(line: string, width: number, gap: number): number {
+	const totalContentWidth = line.length + gap;
+	const padding = Math.floor((width - totalContentWidth) / 2);
+	return padding + gap / 2;
 }
