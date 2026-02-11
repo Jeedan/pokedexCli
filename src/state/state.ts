@@ -26,6 +26,7 @@ export type State = {
 		playerPokemon: Pokemon;
 		opponentHP: number;
 		playerHP: number;
+		battleLog: string[];
 	};
 };
 
