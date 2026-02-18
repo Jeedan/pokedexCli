@@ -1,6 +1,7 @@
-import { Pokemon } from "src/services/pokeapi.js";
 import { showInitialHelp, State } from "../../state/state.js";
 import { sleep } from "../../utils/utils.js";
+import { BasePokemon } from "../../state/basePokemon.js";
+import { DEBUG_FLAG } from "../../utils/debug_flag.js";
 
 export function exitBattle(state: State) {
 	state.battleState = undefined;
@@ -10,35 +11,31 @@ export function exitBattle(state: State) {
 
 export function renderBattleScreen(state: State): void {
 	console.clear();
-	const opponentPokemon = state.battleState!.opponentPokemon;
-	if (!opponentPokemon) return;
-
-	const playerPokemon = state.battleState!.playerPokemon;
-
+	// displays intro text
 	displayPokemonInfo(state);
 
-	// display combat log
+	// displays combat log after having calculated damage
 	const battleLog = state.battleState?.battleLog;
 	if (!battleLog) return;
 	battleLog.map((line) => console.log(line));
-	// for (const line of battleLog) {
-	// 	console.log(line);
-	// }
+
+	// displays battle options
 	displayBattleOptions();
 }
 
 export async function decideBattleVictor(
 	state: State,
-	opponentPokemon: Pokemon,
+	playerPokemon: BasePokemon,
+	opponentPokemon: BasePokemon,
 ): Promise<void> {
-	if (state.battleState!.opponentHP <= 0) {
-		console.log(`\n${opponentPokemon.name} has fainted!\n`);
+	if (opponentPokemon.getCurrentHP() <= 0) {
+		console.log(`\nWild ${opponentPokemon.getName()} has fainted!\n`);
 		console.log(`Your pokemon has earned some xp!\n`);
 
 		await sleep(500);
 		exitBattle(state);
 		return;
-	} else if (state.battleState!.playerHP <= 0) {
+	} else if (playerPokemon.getCurrentHP() <= 0) {
 		console.log(`\nYour pokemon fainted!\n`);
 		await sleep(500);
 		console.log(`You escape with your pokemon...\n`);
@@ -55,27 +52,29 @@ export function displayPokemonInfo(state: State): void {
 	if (!opponentPokemon) return;
 	if (!playerPokemon) return;
 
-	let playerPokemonHP = state.battleState!.playerHP;
-	let opponentPokemonHP = state.battleState!.opponentHP;
-	const oppNameTxt = `Wild ${opponentPokemon.name}`;
-	const playerNameTxt = `Your ${playerPokemon.name}`;
+	const oppNameTxt = `Wild ${opponentPokemon.getName()}`;
+	const playerNameTxt = `Your ${playerPokemon.getName()}`;
+
 	const paddingDifference = oppNameTxt.length - playerNameTxt.length;
 
-	console.log(`padding diff: ${paddingDifference}\n`);
-	renderNameAndHp(oppNameTxt, opponentPokemonHP);
-	renderNameAndHp(playerNameTxt, playerPokemonHP, paddingDifference);
+	if (DEBUG_FLAG) console.log(`padding diff: ${paddingDifference}\n`);
+	renderNameAndHp(opponentPokemon, "Wild", paddingDifference);
+	renderNameAndHp(playerPokemon, "", paddingDifference);
 	console.log("\n");
 }
 
 export function renderNameAndHp(
-	name: string,
-	hp: number,
+	pokemon: BasePokemon,
+	prefix: string = "",
 	paddingDifference: number = 0,
 ): void {
-	const HPValueText = `${hp}/${hp}`;
-	const nameTxt = `${name}`;
+	const HPValueText = `${pokemon.getCurrentHP()}/${pokemon.getMaxHP()}`;
+	// attach prefix if there is any
+	const nameTxt = `${prefix ? prefix + " " : ""}${pokemon.getName()}`;
 
-	const padding = " ".repeat(Math.max(0, name.length + paddingDifference));
+	const padding = " ".repeat(
+		Math.max(0, pokemon.getName().length + paddingDifference),
+	);
 
 	// TODO: Calculate how many bars to show based on the percentage of HP rounded up.
 	console.log(`${nameTxt + padding}HP: [▓▓▓▓▓░] ${HPValueText}`);
@@ -102,7 +101,9 @@ export function displayBattleOptions_DEPRECATED(): void {
 	const padding = centerLine(questionText, width, gap);
 	const questionPadding = questionText.length / 2;
 	const centerRun = centerLine(runText, width, gap);
-	console.log(`padding: ${padding}`);
+
+	if (DEBUG_FLAG) console.log(`padding: ${padding}`);
+
 	console.log(`+${horizontalBorder}+`);
 	console.log(
 		`|${" ".repeat(padding)}${questionText}${" ".repeat(padding)}|`,

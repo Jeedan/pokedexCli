@@ -1,3 +1,4 @@
+import { DEBUG_FLAG } from "../utils/debug_flag.js";
 import { Cache } from "./pokecache.js";
 
 export class PokeAPI {
@@ -47,7 +48,6 @@ export class PokeAPI {
 
 		const data = await this.fetch<T>(fullURL);
 		// store in cache
-		// TODO refactor ?
 		this.#cache.add(fullURL, data);
 		return data;
 	}
@@ -63,7 +63,7 @@ export class PokeAPI {
 			});
 
 			if (!response.ok) {
-				console.log(`full url:`, fullURL);
+				if (DEBUG_FLAG) console.log(`full url:`, fullURL);
 				throw new Error(`Response status: ${response.status}`);
 			}
 			const data = await response.json();
@@ -85,7 +85,7 @@ export class PokeAPI {
 			return undefined;
 		}
 
-		console.log("Serving from cache:\n");
+		if (DEBUG_FLAG) console.log("Serving from cache:\n");
 		return cachedResponse;
 	}
 
@@ -94,7 +94,6 @@ export class PokeAPI {
 	private async fetchLocations_DEPRECATED(
 		pageURL?: string,
 	): Promise<ShallowLocation> {
-		// TODO
 		const fullURL = `${pageURL ?? `${PokeAPI.baseURL}/location-area`}`;
 		const cachedResponse = this.#cache.get<ShallowLocation>(fullURL);
 		try {
@@ -131,7 +130,6 @@ export class PokeAPI {
 	private async fetchLocation_DEPRECATED(
 		locationName: string,
 	): Promise<Location> {
-		// TODO
 		const fullURL = `${PokeAPI.baseURL}/location-area/${locationName ?? ""}`;
 		const cachedResponse = this.#cache.get<Location>(fullURL);
 

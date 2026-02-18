@@ -1,3 +1,5 @@
+import { DEBUG_FLAG } from "../utils/debug_flag.js";
+
 export type CacheEntry<T> = {
 	createdAt: number;
 	val: T;
@@ -18,7 +20,7 @@ export class Cache {
 
 	add<T>(key: string, val: T): void {
 		this.#cache.set(key, { createdAt: Date.now(), val: val });
-		console.log(`Added ${key} to the cache.\n`);
+		if (DEBUG_FLAG) console.log(`Added ${key} to the cache.\n`);
 	}
 
 	get<T>(key: string): T | undefined {

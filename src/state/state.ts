@@ -1,6 +1,7 @@
 import { createInterface, type Interface } from "readline";
 import { getCommands, getBattleCommands } from "../commands/commands.js";
 import { PokeAPI, type Pokemon } from "../services/pokeapi.js";
+import { BasePokemon } from "../state/basePokemon.js";
 
 export type CLICommand = {
 	name: string;
@@ -22,10 +23,8 @@ export type State = {
 	pokedex: Record<string, Pokemon>;
 	mode: mode;
 	battleState?: {
-		opponentPokemon: Pokemon;
-		playerPokemon: Pokemon;
-		opponentHP: number;
-		playerHP: number;
+		opponentPokemon: BasePokemon;
+		playerPokemon: BasePokemon;
 		battleLog: string[];
 	};
 };

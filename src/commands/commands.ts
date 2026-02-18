@@ -93,7 +93,7 @@ export async function runCommands(
 		await runCallBack(command, state, args);
 		return;
 	} else if (state.mode === "exploration") {
-		// Todo
+		// Todo check boot.dev for assignment pointers
 		console.log("we exploring...");
 		return;
 	}

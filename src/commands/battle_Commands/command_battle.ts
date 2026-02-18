@@ -1,3 +1,5 @@
+import { sleep } from "../../utils/utils.js";
+import { BasePokemon } from "../../state/basePokemon.js";
 import { State } from "../../state/state.js";
 import { renderBattleScreen } from "./battle.js";
 
@@ -12,17 +14,20 @@ import { renderBattleScreen } from "./battle.js";
 export async function commandBattle(state: State): Promise<void> {
 	console.clear();
 	state.mode = "battle";
+
+	const opponentAPIResponse = await state.pokeAPI.fetchRandomPokemon();
+	const playerAPIResponse = await state.pokeAPI.fetchPokemon("pikachu");
+
 	state.battleState = {
-		opponentPokemon: await state.pokeAPI.fetchRandomPokemon(),
-		playerPokemon: await state.pokeAPI.fetchPokemon("pikachu"), // hardcoded for now
-		opponentHP: 30, // todo refactor into battleStats type?
-		playerHP: 30,
+		opponentPokemon: new BasePokemon(opponentAPIResponse, 1),
+		playerPokemon: new BasePokemon(playerAPIResponse, 1),
 		battleLog: [],
 	};
 
-	const opponent = state.battleState.opponentPokemon;
-	console.log(`\nA wild ${opponent.name} appeared!\n`);
+	const opponentPokemon = state.battleState.opponentPokemon;
+	console.log(`\nA wild ${opponentPokemon.getName()} appeared!\n`);
 
+	await sleep(2500);
 	renderBattleScreen(state);
 	// displayPokemonInfo(state);
 	// displayBattleOptions();

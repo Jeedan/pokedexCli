@@ -9,7 +9,7 @@ type PokemonStats = {
 	speed: number;
 };
 
-class BasePokemon {
+export class BasePokemon {
 	private apiData: Pokemon;
 	private baseStats: Stats[];
 
@@ -74,11 +74,20 @@ class BasePokemon {
 		return this.apiData.base_experience;
 	}
 
-	getMaxHP() {
+	calculateDamage(): number {
+		// TODO: change to a damage formula based on stats
+		return Math.floor(Math.random() * 10) + 1;
+	}
+
+	getName(): string {
+		return this.apiData.name;
+	}
+
+	getMaxHP(): number {
 		return this.stats.hp;
 	}
 
-	getCurrentHP() {
+	getCurrentHP(): number {
 		return this.currentHP;
 	}
 }
