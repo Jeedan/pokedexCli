@@ -1,10 +1,5 @@
-import { Pokemon } from "src/services/pokeapi.js";
-import { showInitialHelp, State } from "../../state/state.js";
-import {
-	displayBattleOptions,
-	displayPokemonInfo,
-	renderBattleScreen,
-} from "./battle.js";
+import { State } from "../../state/state.js";
+import { renderBattleScreen } from "./battle.js";
 
 // fetch a random pokemon from the api or cache
 

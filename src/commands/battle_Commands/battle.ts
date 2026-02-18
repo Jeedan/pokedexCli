@@ -77,6 +77,7 @@ export function renderNameAndHp(
 
 	const padding = " ".repeat(Math.max(0, name.length + paddingDifference));
 
+	// TODO: Calculate how many bars to show based on the percentage of HP rounded up.
 	console.log(`${nameTxt + padding}HP: [▓▓▓▓▓░] ${HPValueText}`);
 }
 
