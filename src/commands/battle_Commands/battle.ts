@@ -31,28 +31,6 @@ function renderBattleLog(state: State): void {
 	battleLog.map((line) => console.log(line));
 }
 
-export async function decideBattleVictor(
-	state: State,
-	playerPokemon: BasePokemon,
-	opponentPokemon: BasePokemon,
-): Promise<void> {
-	if (opponentPokemon.getCurrentHP() <= 0) {
-		console.log(`\nWild ${opponentPokemon.getName()} has fainted!\n`);
-		console.log(`Your pokemon has earned some xp!\n`);
-
-		await sleep(500);
-		exitBattle(state);
-		return;
-	} else if (playerPokemon.getCurrentHP() <= 0) {
-		console.log(`\nYour pokemon fainted!\n`);
-		await sleep(500);
-		console.log(`You escape with your pokemon...\n`);
-		await sleep(500);
-		exitBattle(state);
-		return;
-	}
-}
-
 // Displays Pokemon info such as Name, Level, HP
 export function renderPokemonBattleInfo(state: State): void {
 	const opponentPokemon = state.battleState?.opponentPokemon;
@@ -108,4 +86,26 @@ export function renderBattleOptions(): void {
 
 function displayBorder(length: number = HORIZONTAL_BORDER_LENGTH): void {
 	console.log("=".repeat(length));
+}
+
+export async function decideBattleVictor(
+	state: State,
+	playerPokemon: BasePokemon,
+	opponentPokemon: BasePokemon,
+): Promise<void> {
+	if (opponentPokemon.getCurrentHP() <= 0) {
+		console.log(`\nWild ${opponentPokemon.getName()} has fainted!\n`);
+		console.log(`Your pokemon has earned some xp!\n`);
+
+		await sleep(500);
+		exitBattle(state);
+		return;
+	} else if (playerPokemon.getCurrentHP() <= 0) {
+		console.log(`\nYour pokemon fainted!\n`);
+		await sleep(500);
+		console.log(`You escape with your pokemon...\n`);
+		await sleep(500);
+		exitBattle(state);
+		return;
+	}
 }

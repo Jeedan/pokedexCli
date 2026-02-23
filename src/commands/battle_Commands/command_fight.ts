@@ -1,6 +1,7 @@
 import { sleep } from "../../utils/utils.js";
 import { State } from "../../state/state.js";
 import { decideBattleVictor, renderBattleScreen } from "./battle.js";
+import { BasePokemon } from "src/state/basePokemon.js";
 
 export async function commandFight(state: State): Promise<void> {
 	if (!state.battleState) {
@@ -17,39 +18,60 @@ export async function commandFight(state: State): Promise<void> {
 	let playerPokemonHP = playerPokemon.getCurrentHP();
 	let opponentPokemonHP = opponentPokemon.getCurrentHP();
 
-	// render screen
 	// reset log
 	state.battleState.battleLog = [];
 	renderBattleScreen(state);
-	const opponentRandomDmg = Math.floor(Math.random() * 10) + 1;
-	const playerPokemonDmg = Math.floor(Math.random() * 10) + 1;
 
-	//displayPokemonInfo(state);
+	const [first, second] = decideTurnOrder(playerPokemon, opponentPokemon);
+
 	if (opponentPokemonHP > 0 && playerPokemonHP > 0) {
-		// enemy attacks
+		await handleTurn(state, first, second);
+		if (second.getCurrentHP() <= 0) {
+			await decideBattleVictor(state, playerPokemon, opponentPokemon);
+			return;
+		}
+		await handleTurn(state, second, first);
 
-		await sleep(500);
-		// TODO: refactor into function
-		const oppDmgMessage = `${opponentPokemon.getName()} attacks and deals ${opponentRandomDmg} damage`;
-		state.battleState.battleLog.push(oppDmgMessage);
-		playerPokemon.setCurrentHP(
-			Math.max(0, playerPokemonHP - opponentRandomDmg),
-		);
-
-		renderBattleScreen(state);
-		//console.log(oppDmgMessage);
-		await sleep(500);
-		const pokemonDmgMessage = `Your ${playerPokemon.getName()} attacks and deals ${playerPokemonDmg} damage`;
-		state.battleState.battleLog.push(pokemonDmgMessage);
-		opponentPokemon.setCurrentHP(
-			Math.max(0, opponentPokemonHP - playerPokemonDmg),
-		);
-		renderBattleScreen(state);
-		//console.log(pokemonDmgMessage);
-
-		await sleep(500);
-
-		//displayBattleOptions();
-		await decideBattleVictor(state, playerPokemon, opponentPokemon);
+		if (first.getCurrentHP() <= 0) {
+			await decideBattleVictor(state, playerPokemon, opponentPokemon);
+			return;
+		}
 	}
+}
+
+async function battleLoop(): Promise<void> {}
+
+function decideTurnOrder(
+	player: BasePokemon,
+	opponent: BasePokemon,
+): BasePokemon[] {
+	const combatants = [player, opponent];
+
+	// faster goes first.
+	// swap if we want slower to go first
+	combatants.sort((a, b) => b.getSpeed() - a.getSpeed());
+
+	return combatants;
+}
+
+async function handleTurn(
+	state: State,
+	attacker: BasePokemon,
+	defender: BasePokemon,
+): Promise<void> {
+	await sleep(500);
+	executeAttack(state, attacker, defender);
+	renderBattleScreen(state);
+	await sleep(500);
+}
+
+function executeAttack(
+	state: State,
+	attacker: BasePokemon,
+	defender: BasePokemon,
+): void {
+	const damage = attacker.calculateDamage();
+	const attackerMessage = `${attacker.getName()} attacks and deals ${damage} damage`;
+	state.battleState?.battleLog.push(attackerMessage);
+	defender.setCurrentHP(Math.max(0, defender.getCurrentHP() - damage));
 }

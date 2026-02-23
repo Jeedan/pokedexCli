@@ -94,4 +94,8 @@ export class BasePokemon {
 	setCurrentHP(hp: number): void {
 		this.#currentHP = hp;
 	}
+
+	getSpeed(): number {
+		return this.stats.speed;
+	}
 }
