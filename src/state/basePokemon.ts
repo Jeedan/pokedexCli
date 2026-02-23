@@ -15,7 +15,7 @@ export class BasePokemon {
 
 	level: number;
 	stats: PokemonStats;
-	currentHP: number;
+	#currentHP: number;
 	catchRate: number;
 	xp?: number;
 
@@ -25,7 +25,7 @@ export class BasePokemon {
 		this.baseStats = apiData.stats;
 
 		this.stats = this.calculateStats();
-		this.currentHP = this.stats.hp;
+		this.#currentHP = this.stats.hp;
 		this.catchRate = this.calculateCatchRate();
 	}
 
@@ -88,6 +88,10 @@ export class BasePokemon {
 	}
 
 	getCurrentHP(): number {
-		return this.currentHP;
+		return this.#currentHP;
+	}
+
+	setCurrentHP(hp: number): void {
+		this.#currentHP = hp;
 	}
 }

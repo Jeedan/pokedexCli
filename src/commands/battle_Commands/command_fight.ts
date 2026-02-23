@@ -32,9 +32,8 @@ export async function commandFight(state: State): Promise<void> {
 		// TODO: refactor into function
 		const oppDmgMessage = `${opponentPokemon.getName()} attacks and deals ${opponentRandomDmg} damage`;
 		state.battleState.battleLog.push(oppDmgMessage);
-		playerPokemon.currentHP = Math.max(
-			0,
-			playerPokemonHP - opponentRandomDmg,
+		playerPokemon.setCurrentHP(
+			Math.max(0, playerPokemonHP - opponentRandomDmg),
 		);
 
 		renderBattleScreen(state);
@@ -42,9 +41,8 @@ export async function commandFight(state: State): Promise<void> {
 		await sleep(500);
 		const pokemonDmgMessage = `Your ${playerPokemon.getName()} attacks and deals ${playerPokemonDmg} damage`;
 		state.battleState.battleLog.push(pokemonDmgMessage);
-		opponentPokemon.currentHP = Math.max(
-			0,
-			opponentPokemonHP - playerPokemonDmg,
+		opponentPokemon.setCurrentHP(
+			Math.max(0, opponentPokemonHP - playerPokemonDmg),
 		);
 		renderBattleScreen(state);
 		//console.log(pokemonDmgMessage);

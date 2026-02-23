@@ -27,7 +27,7 @@ export async function commandBattle(state: State): Promise<void> {
 	const opponentPokemon = state.battleState.opponentPokemon;
 	console.log(`\nA wild ${opponentPokemon.getName()} appeared!\n`);
 
-	await sleep(2500);
+	await sleep(2000);
 	renderBattleScreen(state);
 	// displayPokemonInfo(state);
 	// displayBattleOptions();

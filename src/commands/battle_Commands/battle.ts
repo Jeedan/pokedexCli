@@ -1,7 +1,13 @@
 import { showInitialHelp, State } from "../../state/state.js";
 import { sleep } from "../../utils/utils.js";
 import { BasePokemon } from "../../state/basePokemon.js";
-import { DEBUG_FLAG } from "../../utils/debug_flag.js";
+
+const HORIZONTAL_BORDER_LENGTH: number = 40;
+const POKEMON_NAME_PADDING: number = 5;
+const TOTAL_HP_BLOCKS: number = 6;
+const BATTLE_OPTIONS_PADDING: number = 4;
+const EMPTY_HP_BLOCK: string = "░";
+const FULL_HP_BLOCK: string = "▓";
 
 export function exitBattle(state: State) {
 	state.battleState = undefined;
@@ -11,16 +17,18 @@ export function exitBattle(state: State) {
 
 export function renderBattleScreen(state: State): void {
 	console.clear();
-	// displays intro text
-	displayPokemonInfo(state);
 
-	// displays combat log after having calculated damage
+	renderPokemonBattleInfo(state);
+	renderBattleLog(state);
+	// displays battle options like "1. Fight/Catch/Run"
+	renderBattleOptions();
+}
+
+// displays combat log after having calculated damage
+function renderBattleLog(state: State): void {
 	const battleLog = state.battleState?.battleLog;
 	if (!battleLog) return;
 	battleLog.map((line) => console.log(line));
-
-	// displays battle options
-	displayBattleOptions();
 }
 
 export async function decideBattleVictor(
@@ -45,80 +53,59 @@ export async function decideBattleVictor(
 	}
 }
 
-export function displayPokemonInfo(state: State): void {
+// Displays Pokemon info such as Name, Level, HP
+export function renderPokemonBattleInfo(state: State): void {
 	const opponentPokemon = state.battleState?.opponentPokemon;
 	const playerPokemon = state.battleState?.playerPokemon;
 
 	if (!opponentPokemon) return;
 	if (!playerPokemon) return;
 
+	displayBorder(HORIZONTAL_BORDER_LENGTH);
 	const oppNameTxt = `Wild ${opponentPokemon.getName()}`;
 	const playerNameTxt = `Your ${playerPokemon.getName()}`;
 
-	const paddingDifference = oppNameTxt.length - playerNameTxt.length;
+	const longestNameLength = Math.max(oppNameTxt.length, playerNameTxt.length);
 
-	if (DEBUG_FLAG) console.log(`padding diff: ${paddingDifference}\n`);
-	renderNameAndHp(opponentPokemon, "Wild", paddingDifference);
-	renderNameAndHp(playerPokemon, "", paddingDifference);
+	renderNameAndHp(opponentPokemon, oppNameTxt, longestNameLength);
+	renderNameAndHp(playerPokemon, playerNameTxt, longestNameLength);
 	console.log("\n");
 }
 
 export function renderNameAndHp(
 	pokemon: BasePokemon,
-	prefix: string = "",
-	paddingDifference: number = 0,
+	displayName: string,
+	columnWidth: number,
 ): void {
 	const HPValueText = `${pokemon.getCurrentHP()}/${pokemon.getMaxHP()}`;
-	// attach prefix if there is any
-	const nameTxt = `${prefix ? prefix + " " : ""}${pokemon.getName()}`;
-
-	const padding = " ".repeat(
-		Math.max(0, pokemon.getName().length + paddingDifference),
-	);
-
-	// TODO: Calculate how many bars to show based on the percentage of HP rounded up.
-	console.log(`${nameTxt + padding}HP: [▓▓▓▓▓░] ${HPValueText}`);
+	const nameTxt = `${displayName}`;
+	const paddedName = nameTxt.padEnd(columnWidth + POKEMON_NAME_PADDING);
+	const hpBar = renderHPBar(pokemon);
+	//HP: [▓▓▓▓▓░]
+	console.log(`${paddedName}${hpBar} ${HPValueText}`);
 }
 
-export function displayBattleOptions(): void {
+function renderHPBar(pokemon: BasePokemon): string {
+	const totalBlocks = TOTAL_HP_BLOCKS;
+	const emptyBar = EMPTY_HP_BLOCK;
+	const fullBar = FULL_HP_BLOCK;
+	const hpRatio = pokemon.getCurrentHP() / pokemon.getMaxHP();
+	const filled = Math.round(hpRatio * totalBlocks);
+	const empty = totalBlocks - filled;
+
+	const hpBar = fullBar.repeat(filled) + emptyBar.repeat(empty);
+	return `HP: [${hpBar}]`;
+}
+
+export function renderBattleOptions(): void {
 	const options = ["1. Fight", "2. Catch", "3. Run"];
-	const padding = " ".repeat(4);
-	console.log("=".repeat(40));
+	const padding = " ".repeat(BATTLE_OPTIONS_PADDING);
+	displayBorder(HORIZONTAL_BORDER_LENGTH);
 	console.log("What would you like to do?");
 	console.log(`${options[0] + padding}${options[1] + padding}${options[2]}`);
-	console.log("=".repeat(40));
+	displayBorder(HORIZONTAL_BORDER_LENGTH);
 }
 
-export function displayBattleOptions_DEPRECATED(): void {
-	const width = 40;
-	const gap = 10;
-	const horizontalBorder = "=".repeat(width);
-	const questionText = "What would you like to do?";
-	const fightText = "1.Fight";
-	const catchText = "2.Catch";
-	const runText = "3.Run";
-
-	const padding = centerLine(questionText, width, gap);
-	const questionPadding = questionText.length / 2;
-	const centerRun = centerLine(runText, width, gap);
-
-	if (DEBUG_FLAG) console.log(`padding: ${padding}`);
-
-	console.log(`+${horizontalBorder}+`);
-	console.log(
-		`|${" ".repeat(padding)}${questionText}${" ".repeat(padding)}|`,
-	);
-	console.log(
-		`|${" ".repeat(padding)}${fightText}${" ".repeat(questionPadding)}${catchText}${" ".repeat(padding - 1)}|`,
-	);
-	console.log(
-		`|${" ".repeat(centerRun)}${runText}${" ".repeat(horizontalBorder.length / 2 - 2)}|`,
-	);
-	console.log(`+${horizontalBorder}+`);
-}
-
-function centerLine(line: string, width: number, gap: number): number {
-	const totalContentWidth = line.length + gap;
-	const padding = Math.floor((width - totalContentWidth) / 2);
-	return padding + gap / 2;
+function displayBorder(length: number = HORIZONTAL_BORDER_LENGTH): void {
+	console.log("=".repeat(length));
 }
